@@ -6,12 +6,10 @@ import os
 
 
 host = ""
-port = int(os.getenv('PORT'))
+port = int(os.getenv("PORT"))
+GPIO_PIN = int(os.getenv("GPIO_PIN"))
 
-flashDuration = 0.2  # seconds
 flashing = False
-
-GPIO_PIN = 16
 
 
 def setupServer():
@@ -32,13 +30,13 @@ def setupConnection():
     return conn
 
 
-def FLASH():
+def turn_on_flash():
     GPIO.output(GPIO_PIN, True)
+    return
 
-    sleep(flashDuration)
 
+def turn_off_flash():
     GPIO.output(GPIO_PIN, False)
-
     return
 
 
@@ -56,13 +54,9 @@ def dataTransfer(conn):
             print(command)
 
         if command == "FLASH":
-            reply = "FLASHING!!!"
-            FLASH()
-        else:
-            reply = "Unknown Command"
-        # Send the reply back to the client
-        conn.sendall(str.encode(reply))
-        print("Data has been sent!")
+            turn_on_flash()
+        elif command == "STOP":
+            turn_off_flash()
 
 
 GPIO.setmode(GPIO.BCM)
